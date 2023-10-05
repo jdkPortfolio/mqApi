@@ -44,7 +44,7 @@ app.post("/send", (req, res) => {
 })
 
 function sendMessage(req, res){
-    amqp.connect('amqp://localhost:5672', function(error0, connection) {
+    amqp.connect('amqp://admin:ju5tg0th4ck3d@queueserver:5672', function(error0, connection) {
     if (error0) {
         res.json({success:false, error:error0});
     }
