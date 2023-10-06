@@ -31,11 +31,11 @@ app.post("/send", (req, res) => {
 function sendMessage(req, res){
     amqp.connect('amqp://admin:ju5tg0th4ck3d@localhost:5672', function(error0, connection) {
     if (error0) {
-        res.json({success:false, error:error0});
+        res.json({success:false, error0:error0});
     }
     connection.createChannel(function(error1, channel) {
         if (error1) {
-            res.json({success:false, error:error1});
+            res.json({success:false, error1:error1});
         }
 
         var queue = 'testemails';
