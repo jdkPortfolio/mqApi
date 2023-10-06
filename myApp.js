@@ -24,27 +24,12 @@ app.get("/json", (req, res) => {
     
 })
 
-app.get("/now", (req, res, next) => {
-    req.time = new Date().toString();
-    next();
-}, (req, res) => {
-    res.json({"time":req.time})
-})
-
-app.get("/:word/echo", (req, res) => {
-    res.json({"echo":req.params.word});
-})
-
-app.get("/name", (req, res) => {
-    res.json({"name":req.query.first+" "+req.query.last});
-})
-
 app.post("/send", (req, res) => {
     sendMessage(req, res);
 })
 
 function sendMessage(req, res){
-    amqp.connect('amqp://admin:ju5tg0th4ck3d@queueserver:5672', function(error0, connection) {
+    amqp.connect('amqp://admin:ju5tg0th4ck3d@localhost:5672', function(error0, connection) {
     if (error0) {
         res.json({success:false, error:error0});
     }
