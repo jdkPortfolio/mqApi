@@ -14,14 +14,8 @@ app.use(bodyParser.urlencoded({extended:false}))
 // app.get("/", (req, res) => {
 //     res.sendFile(absPath+'/views/index.html');
 // })
-
-app.get("/json", (req, res) => {
-    if(process.env.MESSAGE_STYLE === "uppercase"){
-        res.json({"message":"Hello json".toUpperCase()});
-    }else{
-        res.json({"message":"Hello json"});
-    }
-    
+app.get("/receive", (req, res) => {
+    receiveMessage(res);
 })
 
 app.post("/send", (req, res) => {
@@ -29,7 +23,7 @@ app.post("/send", (req, res) => {
 })
 
 function sendMessage(req, res){
-    amqp.connect('amqp://admin:ju5tg0th4ck3d@localhost:5672', function(error0, connection) {
+    amqp.connect('amqps://jozawhil:nHgxatkkUqkkQALkKeXPmKYConZu5On5@moose.rmq.cloudamqp.com/jozawhil', function(error0, connection) {
     if (error0) {
         res.json({success:false, error0:error0});
     }
@@ -55,6 +49,37 @@ function sendMessage(req, res){
     }, 500);
 });
 }
+
+function receiveMessage(res){
+    var emails = [];
+    amqp.connect('amqps://jozawhil:nHgxatkkUqkkQALkKeXPmKYConZu5On5@moose.rmq.cloudamqp.com/jozawhil', function(error0, connection) {
+        if (error0) {
+            res.json({success:false, error0:error0});
+        }
+        connection.createChannel(function(error1, channel) {
+            if (error1) {
+                res.json({success:false, error1:error1});
+            }
+
+        var queue = 'testemails';
+
+        channel.assertQueue(queue, {
+            durable: false
+        });
+
+        channel.consume(queue, function(msg) {
+            emails.push(JSON.parse(msg.content.toString()));
+            console.log(emails);
+            
+        }, {
+            noAck: true,
+        });
+    });
+    setTimeout(function() {
+        connection.close();
+    }, 1000);
+});
+} 
 
 
 
